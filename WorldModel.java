@@ -9,6 +9,9 @@ in terms of entities and background elements
 
 final class WorldModel
 {
+   public static final int difficulty = 1;
+   public static DogFactory dog_factory= new EasyDogFactory();
+   public static DogFactory world_event_dog_factory= new CrazyDogFactory();
 
    public static final String CAT_ID = "cat";
    // CHANGE THE CRAB Variables Below TO MOUSE? Delete later if not used
@@ -31,10 +34,10 @@ final class WorldModel
 
    public static final String DOG_KEY = "dog";
    private static final int DOG_NUM_PROPERTIES = 4;
-   private static final int DOG_ID = 1;
+   public static final int DOG_ID = 1;
    private static final int DOG_ROW = 3;
    private static final int DOG_COL = 2;
-   private static final int DOG_ACTION_PERIOD = 5; // 5
+   private static final int DOG_ACTION_PERIOD = 100; // 5
    private static final PathingStrategy DOG_PATHING_STRATEGY = new AStarPathingStrategy();       
 
    public static final String MOUSE_KEY = "mouse";
@@ -105,8 +108,6 @@ final class WorldModel
 
    public static Cat player;
 
-   private int difficulty;
-
 
 
    private int numRows;
@@ -146,7 +147,7 @@ final class WorldModel
       this.occupancy[pos.y][pos.x] = entity;
    }
 
-   private void setBackground(Point pos, Background background) {
+   public void setBackground(Point pos, Background background) {
       if (this.withinBounds(pos)) {
          this.setBackgroundCell(pos, background);
       }
@@ -244,7 +245,12 @@ final class WorldModel
       }
       return properties.length == BGND_NUM_PROPERTIES;
    }
-//
+
+
+
+
+
+   //
 //   private boolean parseOcto(String [] properties, ImageStore imageStore) {
 //      if (properties.length == OCTO_NUM_PROPERTIES) {
 //         Point pt = new Point(Integer.parseInt(properties[OCTO_COL]),
@@ -358,18 +364,14 @@ final class WorldModel
    }
 
    private boolean parseDog(String [] properties, ImageStore imageStore){
-      if (properties.length == DOG_NUM_PROPERTIES){
+      if (properties.length == DOG_NUM_PROPERTIES) {
          Point pt = new Point(Integer.parseInt(properties[DOG_COL]),
                  Integer.parseInt(properties[DOG_ROW]));
-         // REFERENCE: //         OctoNotFull entity = new OctoNotFull(properties[OCTO_ID], Integer.parseInt(properties[OCTO_LIMIT]), pt, Integer.parseInt(properties[OCTO_ACTION_P
-         // String id, Point position, int actionPeriod, int animationPeriod, List<PImage> images, PathingStrategy pathingStrategy
-         Dog dog = DogFactory.create(properties[DOG_ID], pt,  DOG_ACTION_PERIOD, OCTO_ANIMATION_PERIOD, imageStore.getImageList(DOG_KEY), DOG_PATHING_STRATEGY);
+         Dog dog = dog_factory.createEntity(properties[DOG_ID], pt, this.difficulty, imageStore);
          this.tryAddEntity(dog);
       }
       return properties.length == DOG_NUM_PROPERTIES;
    }
-
-
 
    private boolean parseMouse(String [] properties, ImageStore imageStore){
       if (properties.length == MOUSE_NUM_PROPERTIES){
@@ -539,18 +541,4 @@ final class WorldModel
       this.entities = entities;
    }
    public void setPlayers(Set<Entity> players){this.players = players;}
-
-   public void setDifficulty(int difficulty){
-      // if difficulty == 1
-      // this.dogfactory = new easydogfactory;
-   }
-
-   public boolean isOver(){
-      Point point = new Point(0, 0);
-      Optional<Entity> dogTarget = point.findNearest(this, Cat.class);
-      if (!dogTarget.isPresent()){
-         return true;
-      }
-      return false;
-   }
 }

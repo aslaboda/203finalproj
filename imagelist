@@ -1,6 +1,10 @@
 wood images/wood.bmp
+woodbroken images/woodbroken.bmp
 cat images/cat.bmp
-dog images/reddog.bmp
+reddog images/reddog.bmp
+bluedog images/bluedog.bmp
+yellowdog images/yellowdog.bmp
+greendog images/greendog.bmp
 mouse images/mouse.bmp
 cheese images/cheese.bmp
 atlantis images/atlantis0.bmp 255 255 255 0

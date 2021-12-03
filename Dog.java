@@ -28,7 +28,6 @@ public class Dog extends AnimatedBiotic {
                 quake.scheduleActions(world, imageStore, eventScheduler);
             }
         }
-
         eventScheduler.scheduleEvent(entity, new Activity(entity, world, imageStore), nextPeriod);
 
     }

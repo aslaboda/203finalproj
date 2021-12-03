@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Scanner;
 import processing.core.*;
@@ -15,10 +16,8 @@ public final class VirtualWorld
         extends PApplet
 {
     // Timer Action Period:
-    private static final int TIMER_ACTION_PERIOD = 150;
+    private static final int TIMER_ACTION_PERIOD = 100;
     private static final Random world_event_rand = new Random();
-
-    public static int difficulty = 0;
 
 
     // View Window Size & World Size:
@@ -55,7 +54,6 @@ public final class VirtualWorld
 
     private static double timeScale = 1.0;
     private static boolean game_start = false;
-    private static boolean game_over = false;
 
     private ImageStore imageStore;
     private WorldModel world;
@@ -98,42 +96,20 @@ public final class VirtualWorld
             textSize(30);
             fill(0, 102, 153);
             text("Welcome to Cat and Mouse!", 300, 300);
-            text("Choose difficulty to start playing", 300, 350);
-
-            fill(0, 255, 0);
-            square(400, 400, 75);
-            text("Easy: ", 300, 450);
-
-            fill(0, 0, 255);
-            square(450, 500, 75);
-            text("Medium: ", 300, 550);
-
-            fill(255, 0, 0);
-            square(400, 600, 75);
-            text("Hard: ", 300, 650);
-
+            text("Click to start playing", 300, 350);
 //            fill(0, 102, 153, 51);
 
         }
-        else if (!game_over){
+        else{
             long time = System.currentTimeMillis();
-            if (time >= next_time ) {
+            if (time >= next_time) {
                 this.scheduler.updateOnTime(time);
                 next_time = time + TIMER_ACTION_PERIOD;
 
             }
             view.drawViewport();
 
-            if (world.isOver()){
-                game_over = true;
-            }
-
-        }
-        if (game_over){
-            background(200);
-            textSize(30);
-            fill(0, 102, 153);
-            text("Game over!", 300, 300);
+            //System.out.println(frameRate);
         }
 
     }
@@ -170,18 +146,7 @@ public final class VirtualWorld
     public void mousePressed()
     {
         if (!game_start) {
-            if (mouseX >= 400 && mouseX <= 475 && mouseY >= 400 && mouseY <= 475) {
-                world.setDifficulty(1);
-                game_start = true;
-            }
-            if (mouseX >= 450 && mouseX <= 525 && mouseY >= 500 && mouseY <= 575) {
-                world.setDifficulty(2);
-                game_start = true;
-            }
-            if (mouseX >= 400 && mouseX <= 475 && mouseY >= 600 && mouseY <= 675) {
-                world.setDifficulty(3);
-                game_start = true;
-            }
+            game_start = true;
         }
         else{
             //world changing event
@@ -193,11 +158,44 @@ public final class VirtualWorld
         {
             Point pressed = convertMouseCursorToPoint(mouseX, mouseY);
 
+            // Convert the nearest mouse into a crazy dog
+            Optional<Entity> nearestMouse = pressed.findNearest(world, Mouse.class);
+
+            // long nextPeriod = target.getActionPeriod();
+
+            if (nearestMouse.isPresent()){
+                Entity target = nearestMouse.get();
+                Point tgtPos = target.getPosition();
+                String tgtID = target.getId();
+                // long nextPeriod = ((MovingEntity)target).getActionPeriod();
+
+                world.removeEntity(target); // THIS is the consequence of getting caught by the dog
+                scheduler.unscheduleAllEvents(target);
+
+                Dog dog = WorldModel.world_event_dog_factory.createEntity(tgtID, tgtPos, 0, imageStore); //new Dog(WorldModel.CHEESE_ID_PREFIX + entity.getId(), openPt.get(), WorldModel.CHEESE_CORRUPT_MIN + rand.nextInt(WorldModel.CHEESE_CORRUPT_MAX - WorldModel.CHEESE_CORRUPT_MIN), imageStore.getImageList(WorldModel.CHEESE_KEY));
+                world.addEntity(dog);
+                dog.scheduleActions(world, imageStore, scheduler);
+
+            }
+
+
+
+            // Place cheese at the mouse cursor
             if (!world.isOccupied(pressed)) // If this spot is available, create cheese
             {
                 Cheese cheese = new Cheese(WorldModel.CHEESE_ID_PREFIX + 100, pressed, WorldModel.CHEESE_CORRUPT_MIN + world_event_rand.nextInt(WorldModel.CHEESE_CORRUPT_MAX - WorldModel.CHEESE_CORRUPT_MIN), imageStore.getImageList(WorldModel.CHEESE_KEY));
                 world.addEntity(cheese);
                 cheese.scheduleActions(world, imageStore, this.scheduler); } // If the spot is not available, do not create cheese
+
+                // Draw a cracked ground
+            //if (properties.length == BGND_NUM_PROPERTIES) {
+            //    Point pt = new Point(Integer.parseInt(properties[BGND_COL]), Integer.parseInt(properties[BGND_ROW]));
+            //    String id = properties[BGND_ID];
+                // bgnd id = 1
+            //    this.setBackground(pt, new Background(id, imageStore.getImageList(id)));
+            //}
+            //return properties.length == BGND_NUM_PROPERTIES;
+            world.setBackground(pressed, new Background("1000", imageStore.getImageList("woodbroken")));
 
             redraw();
 
@@ -208,22 +206,6 @@ public final class VirtualWorld
     {
         return new Point(mouseX/TILE_WIDTH, mouseY/TILE_HEIGHT);
     }
-
-
-    /* THIS IS THE WORLDCHANGING EVENT IN ASTAR (Creates & destroys the rocks) APPLY THIS METHOD!!!
-       public void mousePressed()
-   {
-      Point pressed = mouseToPoint(mouseX, mouseY);
-
-     if (grid[pressed.y][pressed.x] == GridValues.OBSTACLE)
-        grid[pressed.y][pressed.x] = GridValues.BACKGROUND;
-     else if (grid[pressed.y][pressed.x] == GridValues.BACKGROUND)
-        grid[pressed.y][pressed.x] = GridValues.OBSTACLE;
-
-     redraw();
-
-   }
-     */
 
     public static PImage createImageColored(int width, int height, int color) {
         PImage img = new PImage(width, height, RGB);
@@ -278,7 +260,6 @@ public final class VirtualWorld
             }
         }
     }
-
 
     // Main
     public static void main(String [] args) {

@@ -2,8 +2,9 @@ import processing.core.PImage;
 
 import java.util.List;
 
-public abstract class DogFactory {
-    public static Dog create(/*String id, Point pos, List<PImage> images*/String id, Point position, int actionPeriod, int animationPeriod, List<PImage> images, PathingStrategy pathingStrategy){
-        return new Dog(id, position, actionPeriod,  animationPeriod, images,  pathingStrategy/*id, pos, images*/);
-    }
+public interface DogFactory
+{
+    public Dog createEntity(String id, Point position, int difficulty, ImageStore imageStore);
+
+
 }

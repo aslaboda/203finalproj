@@ -72,10 +72,6 @@ final class WorldView
                     viewPoint.x * this.tileWidth, viewPoint.y * this.tileHeight);
          }
       }
-   }
 
-//   public void drawText(){
-//      this.screen.textSize(20);
-//      if (this.screen.getDifficulty())
-//   }
+   }
 }

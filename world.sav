@@ -1,7 +1,37 @@
-cheeseSpawner cheeseSpawner_7_11 7 11 9377
+cheeseSpawner cheeseSpawner_2_11 2 11 9377
+cheeseSpawner cheeseSpawner_30_11 30 11 9377
+cheeseSpawner cheeseSpawner_7_17 7 17 9377
 mouse mouse_1 30 20
-cat cat_2_3 2 3 9377
+mouse mouse_2 34 15
+mouse mouse_3 20 14
+mouse mouse_4 10 17
+mouse mouse_5 20 8
+cat cat_2_3 6 3 9377
 dog dog_1 31 20
+dog dog_2 20 2
+dog dog_3 14 20
+dog dog_4 15 23
+obstacle obstacle_11_10 11 10
+obstacle obstacle_12_10 12 10
+obstacle obstacle_13_10 13 10
+obstacle obstacle_14_10 14 10
+obstacle obstacle_15_10 15 10
+obstacle obstacle_16_11 16 10
+obstacle obstacle_17_12 17 10
+obstacle obstacle_18_13 18 10
+obstacle obstacle_19_14 19 10
+obstacle obstacle_5_5 5 5
+obstacle obstacle_5_6 5 6
+obstacle obstacle_5_7 5 7
+obstacle obstacle_5_8 5 8
+obstacle obstacle_5_9 5 9
+obstacle obstacle_5_10 5 10
+obstacle obstacle_10_5 10 5
+obstacle obstacle_10_6 10 6
+obstacle obstacle_10_7 10 7
+obstacle obstacle_10_8 10 8
+obstacle obstacle_10_9 10 9
+obstacle obstacle_10_10 10 10
 obstacle obstacle_5_20 5 20
 obstacle obstacle_7_21 7 21
 obstacle obstacle_12_22 12 22
